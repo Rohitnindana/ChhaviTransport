@@ -1,0 +1,8 @@
+# Node modules ignore
+node_modules/
+  
+# Environment variables ignore
+Backend/.env
+
+# Logs ignore
+*.log

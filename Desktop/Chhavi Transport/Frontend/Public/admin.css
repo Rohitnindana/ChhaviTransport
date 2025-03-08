@@ -1,0 +1,97 @@
+/* ✅ Page Width को Limit करें */
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 10px;
+}
+
+/* ✅ Admin Panel Heading को Sticky और छोटा बनाएं */
+h1 {
+    position: sticky;
+    top: 0;
+    background: #343a40;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 22px; /* Heading छोटी करें */
+    z-index: 1000;
+}
+
+/* ✅ Dashboard Stats Cards को छोटा करें */
+.card {
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.card h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.card h2 {
+    font-size: 18px;
+}
+
+/* ✅ Table को Scrollable और Compact बनाएं */
+.table-container {
+    max-height: 450px; /* Table की Height छोटी करें */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+}
+
+/* ✅ Table Header को Sticky और Compact बनाएं */
+thead {
+    position: sticky;
+    top: 0;
+    background: #212529;
+    color: white;
+    font-size: 14px; /* Header Font छोटा करें */
+    z-index: 999;
+}
+
+/* ✅ Table Rows की Height कम करें */
+.table th,
+.table td {
+    padding: 6px; /* Padding कम करें */
+    font-size: 13px; /* Font छोटा करें */
+    text-align: center;
+}
+
+/* ✅ Buttons को Compact और छोटा करें */
+.btn {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+/* ✅ Status Badges को छोटा करें */
+.badge {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+/* ✅ Mobile Responsive Fix */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 5px;
+    }
+
+    .table th,
+    .table td {
+        font-size: 12px;
+        padding: 4px;
+    }
+
+    .btn {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+
+    .badge {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+}

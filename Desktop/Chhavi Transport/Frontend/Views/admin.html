@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Chhavi Transport</title>
+    <link rel="stylesheet" href="/admin.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<!-- ✅ Navbar with Logout Button -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">Admin Panel</a>
+        <a href="/logout" class="btn btn-danger">Logout</a>
+    </div>
+</nav>
+
+    <div class="container mt-4">
+        <h1 class="text-center">Admin Panel - Chhavi Transport</h1>
+        
+        <!-- Dashboard Stats -->
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h3>Total Bookings</h3>
+                        <h2 id="totalBookings">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <h3>Pending Bookings</h3>
+                        <h2 id="pendingBookings">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h3>Completed Bookings</h3>
+                        <h2 id="completedBookings">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="my-3">
+            <input type="text" id="searchBox" class="form-control" placeholder="Search Bookings...">
+        </div>
+        <!-- ✅ Search and Filter -->
+<div class="row my-3">
+    <div class="col-md-6">
+        <input type="text" id="searchBox" class="form-control" placeholder="🔍 Search Bookings...">
+    </div>
+    <div class="col-md-6">
+        <select id="filterStatus" class="form-select">
+            <option value="">📋 Show All</option>
+            <option value="Pending">⏳ Pending</option>
+            <option value="Completed">✅ Completed</option>
+        </select>
+    </div>
+</div>
+
+
+        <!-- Bookings Table -->
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Pickup</th>
+                    <th>Dropoff</th>
+                    <th>Date</th>
+                    <th>Vehicle</th>
+                    <th>Goods</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="bookingTable">
+                <!-- Bookings will be loaded here using JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    fetch("/api/bookings")
+        .then(res => res.json())
+        .then(data => {
+            let total = data.length;
+            let pending = data.filter(b => b.status === "Pending").length;
+            let completed = data.filter(b => b.status === "Completed").length;
+
+            document.getElementById("totalBookings").innerText = total;
+            document.getElementById("pendingBookings").innerText = pending;
+            document.getElementById("completedBookings").innerText = completed;
+
+            loadBookings(data);
+
+            // ✅ Search Functionality
+            document.getElementById("searchBox").addEventListener("input", function () {
+                let query = this.value.toLowerCase();
+                let filteredData = data.filter(booking =>
+                    booking.name.toLowerCase().includes(query) ||
+                    booking.phone.includes(query) ||
+                    booking.pickup.toLowerCase().includes(query) ||
+                    booking.dropoff.toLowerCase().includes(query)
+                );
+                loadBookings(filteredData);
+            });
+
+            // ✅ Filter Functionality
+            document.getElementById("filterStatus").addEventListener("change", function () {
+                let status = this.value;
+                let filteredData = status ? data.filter(booking => booking.status === status) : data;
+                loadBookings(filteredData);
+            });
+        })
+        .catch(err => console.error("Error fetching bookings:", err));
+});
+
+function loadBookings(bookings) {
+    let bookingTable = document.getElementById("bookingTable");
+    bookingTable.innerHTML = "";
+
+    bookings.forEach(booking => {
+        let row = `
+            <tr>
+                <td>${booking.name}</td>
+                <td>${booking.phone}</td>
+                <td>${booking.pickup}</td>
+                <td>${booking.dropoff}</td>
+                <td>${booking.date}</td>
+                <td>${booking.vehicle}</td>
+                <td>${booking.goods}</td>
+                <td>
+                    <span class="badge ${booking.status === 'Pending' ? 'bg-warning' : 'bg-success'}">
+                        ${booking.status}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteBooking('${booking._id}')">Delete</button>
+                    <button class="btn btn-info btn-sm" onclick="updateStatus('${booking._id}')">Complete</button>
+                </td>
+            </tr>
+        `;
+        bookingTable.innerHTML += row;
+    });
+}
+
+function deleteBooking(id) {
+    if (confirm("Are you sure you want to delete this booking?")) {
+        fetch(`/delete-booking/${id}`, { method: "POST" })
+            .then(() => location.reload());
+    }
+}
+
+function updateStatus(id) {
+    fetch(`/update-status/${id}`, { method: "POST" })
+        .then(() => location.reload());
+}
+
+    </script>
+
+</body>
+</html>
